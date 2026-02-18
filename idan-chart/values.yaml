@@ -1,0 +1,9 @@
+wordpress:
+  replicas: 2
+  image: wordpress:latest
+  servicePort: 80
+
+mysql:
+  image: mysql:5.7
+  rootPassword: "password123"
+  storageSize: 1Gi
