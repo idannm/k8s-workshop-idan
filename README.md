@@ -1,11 +1,4 @@
-‫Gemini אמר
-הבנתי אותך לגמרי, עידן. קובץ README מקצועי זה כרטיס הביקור של הפרויקט שלך. המרצה רוצה לקרוא אותו ולהגיד "וואו, הבחור הזה מבין את הארכיטקטורה של המערכת, הוא לא סתם הריץ פקודות".
-
-הכנתי לך קובץ README.md חדש, משודרג ומרשים. יש בו הסבר על כל רכיב, למה בחרת בו, ומה הוא עושה.
-
-פשוט תעתיק את כל הטקסט שנמצא בתוך התיבה השחורה פה למטה, ותדביק אותו בקובץ ה-README.md שלך ב-GitHub במקום מה שיש שם עכשיו:
-
-Markdown
+```markdown
 # 🚀 K8s Workshop Final Project
 
 ## 📌 אודות הפרויקט (Project Overview)
@@ -47,31 +40,46 @@ Markdown
 כדי לחשוף את האתר לעולם, נתקין תחילה את ה-Ingress Controller:
 ```bash
 helm install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace ingress-nginx
-שלב 2: פריסת האפליקציה ומסד הנתונים (הפרויקט שלנו)
-התקנת ה-Helm Chart שיצרנו (idan-chart), אשר מרים אוטומטית את ה-WordPress, ה-MySQL (עם ה-PVC) ואת שאר משאבי הרשת:
 
-Bash
+```
+
+### שלב 2: פריסת האפליקציה ומסד הנתונים (הפרויקט שלנו)
+
+התקנת ה-Helm Chart שיצרנו (`idan-chart`), אשר מרים אוטומטית את ה-WordPress, ה-MySQL (עם ה-PVC) ואת שאר משאבי הרשת:
+
+```bash
 helm install my-site ./idan-chart
-שלב 3: התקנת מערכת הניטור (Prometheus & Grafana)
+
+```
+
+### שלב 3: התקנת מערכת הניטור (Prometheus & Grafana)
+
 הקמת סביבת הניטור ב-Namespace נפרד כדי לעקוב אחרי ביצועי המערכת:
 
-Bash
+```bash
 helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
-📊 גישה למערכת הניטור (Accessing Grafana)
+
+```
+
+---
+
+## 📊 גישה למערכת הניטור (Accessing Grafana)
+
 כדי לצפות בגרפים ובמדדי השרת בזמן אמת, יש לפתוח ערוץ תקשורת מאובטח (Port-Forward) לתוך הקלאסטר:
 
-פתיחת הגישה:
+1. **פתיחת הגישה:**
 
-Bash
+```bash
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80 --address 0.0.0.0 &
-כניסה לדפדפן:
-פתחו את הכתובת: http://<YOUR-EC2-IP>:3000
 
-פרטי התחברות:
+```
 
-שם משתמש: admin
+2. **כניסה לדפדפן:**
+פתחו את הכתובת: `http://<YOUR-EC2-IP>:3000`
+3. **פרטי התחברות:**
 
-סיסמה: (הריצו את הפקודה הבאה בטרמינל כדי לשלוף את הסיסמה המוצפנת מתוך ה-Secrets של קוברנטיס):
+* **שם משתמש:** `admin`
+* **סיסמה:** (הריצו את הפקודה הבאה בטרמינל כדי לשלוף את הסיסמה המוצפנת מתוך ה-Secrets של קוברנטיס):
 
-Bash
-kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.a
+```bash
+kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
