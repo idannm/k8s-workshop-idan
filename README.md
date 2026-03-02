@@ -10,16 +10,16 @@
 ## 🏗️ ארכיטקטורת המערכת (System Architecture)
 הפרויקט מורכב ממספר רכיבי תשתית מרכזיים כדי להבטיח זמינות, אבטחה ושמירת נתונים:
 
-1. **WordPress (Frontend / Application):**
+1.WordPress (Frontend / Application):
    * מנוהל כ-`Deployment` כדי לאפשר גמישות (Scale) עתידית.
    * נגיש דרך `ClusterIP Service` פנימי לאבטחת התקשורת.
 
-2. **MySQL (Database):**
+2. MySQL (Database):
    * מנוהל כ-`StatefulSet` ולא כ-Deployment רגיל, מכיוון שמסד נתונים דורש זהות יציבה.
    * מחובר ל-**Persistent Volume Claim (PVC)** המבטיח שהמידע של האתר (פוסטים, משתמשים, הגדרות) יישמר לתמיד, גם אם הפוד קורס או עובר שרת.
    * התקשורת מול הוורדפרס מתבצעת דרך **Headless Service** (ללא IP כללי), כדי שהאפליקציה תתחבר ישירות לדיסק הנכון ללא Load Balancing שמפריע ל-DB.
 
-3. **NGINX Ingress Controller (Gateway):**
+3. NGINX Ingress Controller (Gateway):
    * משמש כ"שוער" של הקלאסטר. מקבל את כל התעבורה החיצונית מהאינטרנט ומנתב אותה פנימה בצורה בטוחה וחכמה ל-Service של הוורדפרס.
 
 4. **Monitoring (מערכת ניטור):**
